@@ -12,6 +12,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.stereotype.Component;
@@ -33,10 +37,15 @@ public class HealthInsurancePlan {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@NotBlank(message = "Plan name can not be empty.")
+	@Size(min = 3, message = "Plan name should be at least 3 character long.")
+	@NotNull(message = "Plan name can not be null.")
 	private String planName;
 
+	@Min(value = 1, message = "cover minimum should be greater than 0")
 	private long coverMin;
 
+	@Min(value = 1, message = "cover maximum should be greater than 0")
 	private long coverMax;
 
 	@Transient
@@ -55,6 +64,7 @@ public class HealthInsurancePlan {
 			"hospitals_id", "HealthInsurancePlan_id" }))
 	private Set<Hospital> hospitals;
 
+	@NotNull(message = "Insurance Provider can not be null.")
 	@ManyToOne
 	private User insuranceProvider;
 

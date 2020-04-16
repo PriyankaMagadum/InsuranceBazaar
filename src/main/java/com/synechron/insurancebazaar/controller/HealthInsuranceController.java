@@ -205,17 +205,22 @@ public class HealthInsuranceController {
 	public ResponseEntity<Response> deleteHealthInsurancePlan(@PathVariable("id") long id)
 			throws ObjectNotFoundException, InvalidUserException {
 
-		if (healthInsurancePlanService.getByIdAndIsActive(id, true) == null) {
+		HealthInsurancePlan plan = healthInsurancePlanService.getByIdAndIsActive(id, true);
+
+		if (plan == null) {
 			throw new ObjectNotFoundException("Health Insurance Plan with provided id does not exists.");
 		}
 
 		int updateStatus = healthInsurancePlanService.updateStatus(false, id);
+
+		System.out.println("update status=" + updateStatus);
+
 		if (updateStatus == 0) {
 			return new ResponseEntity<Response>(new Response("Failed, Please try again", null), HttpStatus.BAD_REQUEST);
 		}
 
 		return new ResponseEntity<Response>(
-				new Response("Success", getAllHealthInsurancePlanLinks(null, new Resource<HealthInsurancePlan>(null))),
+				new Response("Success", getAllHealthInsurancePlanLinks(plan, new Resource<HealthInsurancePlan>(plan))),
 				HttpStatus.OK);
 
 	}
